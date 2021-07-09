@@ -19,7 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="../../src/main.c" />
+    <ClCompile Include="../../src/core/main.c" />
+    <ClCompile Include="..\..\src\core\extractor.c" />
+    <ClCompile Include="..\..\src\core\util.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\core\extractor.h" />
+    <ClInclude Include="..\..\src\core\util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
