@@ -1,0 +1,3 @@
+garbage/*
+build_tools/vs/.vs/*
+build_tools/vs/output/*
