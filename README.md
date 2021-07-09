@@ -1,23 +1,33 @@
-# [<img src="assets/badreads.svg" align="left" width="100"/>](assets/badreads.svg) ![Travis (.org)](https://img.shields.io/travis/LinArcX/badreads) ![Language](https://img.shields.io/github/languages/top/LinArcX/badreads.svg) ![RepoSize](https://img.shields.io/github/repo-size/LinArcX/badreads.svg) ![Latest Tag](https://img.shields.io/github/tag/LinArcX/badreads.svg?colorB=green)
-![Open Issues](https://img.shields.io/github/issues-raw/LinArcX/badreads.svg) ![Issues](https://img.shields.io/github/issues-closed-raw/LinArcX/badreads.svg) ![Open PR](https://img.shields.io/github/issues-pr-raw/LinArcX/badreads.svg) ![Closed PR](https://img.shields.io/github/issues-pr-closed/LinArcX/badreads.svg)
+<h4 align="center">
+    <img src="assets/badreads.svg" align="center" width="100"/>
+</h4>
+
+<h4 align="center">
+    <img src="https://img.shields.io/travis/LinArcX/badreads"/>  <img src="https://img.shields.io/github/tag/LinArcX/badreads.svg?colorB=green"/>  <img src="https://img.shields.io/github/repo-size/LinArcX/badreads.svg"/>  <img src="https://img.shields.io/github/languages/top/LinArcX/badreads.svg"/>
+</h4>
 
 ### Build and run from source
-To build and run badreads from source, you have to install some dependencies:
+You can build badreads with different build-systems(gnu-make or visual-studio) with different configurations.(x86,64 | debug,release).
+But before compiling you need some tools:
 
 #### build dependencies
 - git
 - clang(or gcc)
+- gnu-make(or visual-studio)
 
-After that, clone the repo:
+Now i'll show you how compile badreads on linux machine.(compiler: gcc, build-tools: make, mode: release)
+
+1. Clone the project
 `git clone https://github.com/LinArcX/badreads/`
 
-And cd to cloned directory and compile the project with make:
+2. Go into it:
+`cd badreads/build_tools/make`
 
-```
-cd badreads; mkdir build; cd build
-make
-cd ../build_tools/make/Release; ./badreads
-```
+3. Run make:
+`make`
+
+4. Run the executable:
+`./output/release/badreads`
 
 ## License
 ![License](https://img.shields.io/github/license/LinArcX/badreads.svg)
