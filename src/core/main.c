@@ -9,6 +9,12 @@ main(int argc, char *argv[])
 
     read_file_into_buffer(argv[1]);
     extractor();
+
+    for (int i = 0; i < TOTAL_BOOKS_IN_PAGE; i++) {
+        printf(
+          "%d.\ntitle: %s\nauthor: %s\ndate: %.4s\n\n", i + 1, total_books[i].title, total_books[i].author, total_books[i].date);
+    }
+
     free(source);
     return (0);
 }

@@ -9,18 +9,9 @@ typedef struct book_details
 {
     char url[200];
     char image[200];
-
     char title[50];
     char author[50];
-
-    struct rating
-    {
-        float avg;
-        float total;
-    } Rating;
-
-    short date;
-    short editions;
+    char date[4];
 } BookDetails;
 
 extern BookDetails total_books[TOTAL_BOOKS_IN_PAGE];

@@ -1,9 +1,9 @@
 <h4 align="center">
-    <img src="assets/badreads.svg" align="center" width="100"/>
+    <img src="assets/badreads.svg" align="center" width="130"/>
 </h4>
 
 <h4 align="center">
-    <img src="https://img.shields.io/travis/LinArcX/badreads"/>  <img src="https://img.shields.io/github/tag/LinArcX/badreads.svg?colorB=green"/>  <img src="https://img.shields.io/github/repo-size/LinArcX/badreads.svg"/>  <img src="https://img.shields.io/github/languages/top/LinArcX/badreads.svg"/>
+    <img src="https://img.shields.io/github/languages/top/LinArcX/badreads.svg"/>  <img src="https://img.shields.io/github/repo-size/LinArcX/badreads.svg"/>  <img src="https://img.shields.io/github/tag/LinArcX/badreads.svg?colorB=green"/>
 </h4>
 
 ### Build and run from source

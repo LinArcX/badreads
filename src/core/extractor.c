@@ -1,9 +1,12 @@
 #include "extractor.h"
 
-BookDetails total_books[TOTAL_BOOKS_IN_PAGE] = { 0 };
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 int total_pages;
 int current_page;
+BookDetails total_books[TOTAL_BOOKS_IN_PAGE] = { 0 };
 
 void
 extractor(void)
@@ -13,35 +16,46 @@ extractor(void)
     short in_tbody = 0;
 
     short in_td_left = 0;
+    short in_td_middle = 0;
+
+    // url
     short in_td_left_a = 0;
-    short in_td_left_a_img = 0;
     short in_td_left_a__href = 0;
+
+    // image
+    short in_td_left_a_img = 0;
     short in_td_left_a_img__src = 0;
 
-    short in_td_middle = 0;
-    short in_td_middle_a = 0;
-    short in_td_middle_a_span = 0;
+    // title
+    short in_td_middle_a_title = 0;
     short in_td_middle_a_span_title = 0;
+    short in_td_middle_a_span_title_in = 0;
+
+    // author
     short in_td_middle_span_author = 0;
-    short in_td_middle_span_ratings = 0;
-    short in_td_middle_span_date = 0;
-    short in_td_middle_a_editions = 0;
+    short in_td_middle_span_a_author = 0;
+    short in_td_middle_span_a_span_author = 0;
+    short in_td_middle_span_a_span_author_in = 0;
+
+    // date
+    short in_td_middle_date = 0;
+    short date_consumed = 0;
 
     while (source[i] != 0) {
         if ('<' == source[i]) {
             // <tr
-            if (source[i + 1] != 0 && 't' == source[i + 1]) {
-                if (source[i + 2] != 0 && 'r' == source[i + 2]) {
+            if ('t' == source[i + 1]) {
+                if ('r' == source[i + 2]) {
                     in_tr = 1;
                     i = i + 3;
                     continue;
                 }
             }
 
-            if (source[i + 1] != 0 && '/' == source[i + 1]) {
+            if ('/' == source[i + 1]) {
                 // </tr
-                if (source[i + 2] != 0 && 't' == source[i + 2]) {
-                    if (source[i + 3] != 0 && 'r' == source[i + 3]) {
+                if ('t' == source[i + 2]) {
+                    if ('r' == source[i + 3]) {
                         in_tr = 2;
                         i = i + 4;
                         continue;
@@ -49,8 +63,8 @@ extractor(void)
                 }
             }
             // </td
-            if (source[i + 2] != 0 && 't' == source[i + 2]) {
-                if (source[i + 3] != 0 && 'd' == source[i + 3]) {
+            if ('t' == source[i + 2]) {
+                if ('d' == source[i + 3]) {
                     in_td_left = 0;
                     in_td_middle = 0;
                     i = i + 4;
@@ -58,36 +72,28 @@ extractor(void)
                 }
             }
 
-            if (source[i + 1] != 0 && 't' == source[i + 1]) {
-                if (source[i + 2] != 0 && 'd' == source[i + 2]) {
-                    if (source[i + 3] != 0 && ' ' == source[i + 3]) {
-                        if (source[i + 4] != 0 && 'w' == source[i + 4]) {
-                            if (source[i + 5] != 0 && 'i' == source[i + 5]) {
-                                if (source[i + 6] != 0 && 'd' == source[i + 6]) {
-                                    if (source[i + 7] != 0 && 't' == source[i + 7]) {
-                                        if (source[i + 8] != 0 && 'h' == source[i + 8]) {
-                                            if (source[i + 9] != 0 && '=' == source[i + 9]) {
-                                                if (source[i + 10] != 0 && '"' == source[i + 10]) {
-                                                    // <td width="5%
-                                                    if (source[i + 11] != 0 && '5' == source[i + 11]) {
-                                                        if (source[i + 12] != 0 && '%' == source[i + 12]) {
-                                                            in_td_left = 1;
-                                                            i = i + 13;
-                                                            continue;
-                                                        }
-                                                    }
-                                                    // <td width="100%
-                                                    if (source[i + 11] != 0 && '1' == source[i + 11]) {
-                                                        if (source[i + 12] != 0 && '0' == source[i + 12]) {
-                                                            if (source[i + 13] != 0 && '0' == source[i + 13]) {
-                                                                if (source[i + 14] != 0 && '%' == source[i + 14]) {
-                                                                    in_td_middle = 1;
-                                                                    i = i + 15;
-                                                                    continue;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+            if ('t' == source[i + 1]) {
+                if ('d' == source[i + 2]) {
+                    if (' ' == source[i + 3]) {
+                        if ('w' == source[i + 4]) {
+                            if ('=' == source[i + 9]) {
+                                if ('"' == source[i + 10]) {
+                                    // <td width="5%
+                                    if ('5' == source[i + 11]) {
+                                        if ('%' == source[i + 12]) {
+                                            in_td_left = 1;
+                                            i = i + 13;
+                                            continue;
+                                        }
+                                    }
+                                    // <td width="100%
+                                    if ('1' == source[i + 11]) {
+                                        if ('0' == source[i + 12]) {
+                                            if ('0' == source[i + 13]) {
+                                                if ('%' == source[i + 14]) {
+                                                    in_td_middle = 1;
+                                                    i = i + 15;
+                                                    continue;
                                                 }
                                             }
                                         }
@@ -101,46 +107,128 @@ extractor(void)
         }
 
         if (in_td_middle) {
-            if ('<' == source[i]) {
-                // <a
-                if (source[i + 1] != 0 && 'a' == source[i + 1]) {
-                    in_td_middle_a = 1;
-                    ++i;
-                    continue;
+            // - published X -
+            if ('p' == source[i]) {
+                if ('u' == source[i + 1]) {
+                    if ('b' == source[i + 2]) {
+                        if ('l' == source[i + 3]) {
+                            in_td_middle_date = 1;
+                            i++;
+                            continue;
+                        }
+                    }
                 }
             }
 
-            if (in_td_middle_a) {
+            if ('<' == source[i]) {
+                // <a class="bookTitle"
+                if ('a' == source[i + 1]) {
+                    if ('b' == source[i + 10]) {
+                        if ('o' == source[i + 11]) {
+                            if ('o' == source[i + 12]) {
+                                if ('k' == source[i + 13]) {
+                                    if ('T' == source[i + 14]) {
+                                        in_td_middle_a_title = 1;
+                                        i = i + 15;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // <span itemprop="author"
+                if ('s' == source[i + 1]) {
+                    if ('a' == source[i + 16]) {
+                        if ('u' == source[i + 17]) {
+                            if ('t' == source[i + 18]) {
+                                in_td_middle_span_author = 1;
+                                i = i + 22;
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (in_td_middle_date) {
+                if (isdigit(source[i])) {
+                    strncat(total_books[current_page].date, &source[i], 1);
+                    date_consumed = 1;
+                } else if (date_consumed) {
+                    in_td_middle_date = 0;
+                    date_consumed = 0;
+                }
+                ++i;
+                continue;
+            }
+            if (in_td_middle_span_author) {
                 if ('<' == source[i]) {
-                    // <span
-                    if (source[i + 1] != 0 && 's' == source[i + 1]) {
-                        in_td_middle_a_span = 1;
+                    // <a class="authorName"
+                    if ('a' == source[i + 1]) {
+                        in_td_middle_span_a_author = 1;
                         ++i;
                         continue;
                     }
                 }
 
-                if (in_td_middle_a_span) {
-                    if ('>' == source[i]) {
+                if (in_td_middle_span_a_author) {
+                    if ('<' == source[i]) {
+                        // <span
+                        if ('s' == source[i + 1]) {
+                            in_td_middle_span_a_span_author = 1;
+                            ++i;
+                            continue;
+                        }
+                    }
+
+                    if (in_td_middle_span_a_span_author) {
+                        if ('>' == source[i]) {
+                            in_td_middle_span_a_span_author_in = 1;
+                            ++i;
+                            continue;
+                        }
+
+                        // consume author
+                        if (in_td_middle_span_a_span_author_in) {
+                            if ('<' != source[i]) {
+                                strncat(total_books[current_page].author, &source[i], 1);
+                            } else {
+                                in_td_middle_span_author = 0;
+                                in_td_middle_span_a_author = 0;
+                                in_td_middle_span_a_span_author = 0;
+                                in_td_middle_span_a_span_author_in = 0;
+                            }
+                            ++i;
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            if (in_td_middle_a_title) {
+                if ('<' == source[i]) {
+                    // <span
+                    if ('s' == source[i + 1]) {
                         in_td_middle_a_span_title = 1;
                         ++i;
                         continue;
-
-                        //// <span
-                        // if (source[i + 1] != 0 && 's' == source[i + 1]) {
-                        //  in_td_middle_a_span = 1;
-                        //  ++i;
-                        //  continue;
-                        //}
                     }
-
-                    if (in_td_middle_a_span_title) {
+                }
+                if (in_td_middle_a_span_title) {
+                    if ('>' == source[i]) {
+                        in_td_middle_a_span_title_in = 1;
+                        ++i;
+                        continue;
+                    }
+                    // consume title
+                    if (in_td_middle_a_span_title_in) {
                         if ('<' != source[i]) {
                             strncat(total_books[current_page].title, &source[i], 1);
                         } else {
+                            in_td_middle_a_span_title_in = 0;
+                            in_td_middle_a_title = 0;
                             in_td_middle_a_span_title = 0;
-                            in_td_middle_a = 0;
-                            in_td_middle_a_span = 0;
                         }
                         ++i;
                         continue;
@@ -152,15 +240,14 @@ extractor(void)
         if (in_td_left) {
             if ('<' == source[i]) {
                 // <a
-                if (source[i + 1] != 0 && 'a' == source[i + 1]) {
+                if ('a' == source[i + 1]) {
                     in_td_left_a = 1;
                     ++i;
                     continue;
                 }
-
                 // </a
-                if (source[i + 1] != 0 && '/' == source[i + 1]) {
-                    if (source[i + 2] != 0 && 'a' == source[i + 2]) {
+                if ('/' == source[i + 1]) {
+                    if ('a' == source[i + 2]) {
                         in_td_left_a = 0;
                         ++i;
                         continue;
@@ -173,11 +260,11 @@ extractor(void)
         if (in_td_left_a) {
             // <href
             if ('h' == source[i]) {
-                if (source[i + 1] != 0 && 'r' == source[i + 1]) {
-                    if (source[i + 2] != 0 && 'e' == source[i + 2]) {
-                        if (source[i + 3] != 0 && 'f' == source[i + 3]) {
-                            if (source[i + 4] != 0 && '=' == source[i + 4]) {
-                                if (source[i + 5] != 0 && '"' == source[i + 5]) {
+                if ('r' == source[i + 1]) {
+                    if ('e' == source[i + 2]) {
+                        if ('f' == source[i + 3]) {
+                            if ('=' == source[i + 4]) {
+                                if ('"' == source[i + 5]) {
                                     in_td_left_a__href = 1;
                                     i = i + 6;
                                     continue;
@@ -189,9 +276,9 @@ extractor(void)
             }
             // </img
             if ('<' == source[i]) {
-                if (source[i + 1] != 0 && 'i' == source[i + 1]) {
-                    if (source[i + 2] != 0 && 'm' == source[i + 2]) {
-                        if (source[i + 3] != 0 && 'g' == source[i + 3]) {
+                if ('i' == source[i + 1]) {
+                    if ('m' == source[i + 2]) {
+                        if ('g' == source[i + 3]) {
                             in_td_left_a_img = 1;
                             i = i + 4;
                             continue;
@@ -213,10 +300,10 @@ extractor(void)
 
             if (in_td_left_a_img) {
                 if ('s' == source[i]) {
-                    if (source[i + 1] != 0 && 'r' == source[i + 1]) {
-                        if (source[i + 2] != 0 && 'c' == source[i + 2]) {
-                            if (source[i + 3] != 0 && '=' == source[i + 3]) {
-                                if (source[i + 4] != 0 && '"' == source[i + 4]) {
+                    if ('r' == source[i + 1]) {
+                        if ('c' == source[i + 2]) {
+                            if ('=' == source[i + 3]) {
+                                if ('"' == source[i + 4]) {
                                     in_td_left_a_img__src = 1;
                                     i = i + 5;
                                     continue;
@@ -234,8 +321,6 @@ extractor(void)
                 } else {
                     in_td_left_a_img__src = 0;
                     in_td_left_a_img = 0;
-                    // in_td_left_a = 0;
-                    // in_td_left = 0;
                 }
                 ++i;
                 continue;
@@ -247,8 +332,8 @@ extractor(void)
             in_tr = 0;
             in_td_left = 0;
             in_td_left_a = 0;
-            in_td_left_a_img = 0;
             in_td_left_a__href = 0;
+            in_td_left_a_img = 0;
             in_td_left_a_img__src = 0;
         }
         ++i;
